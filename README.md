@@ -1,6 +1,6 @@
-## `api-server`
+# `api-server`
 
-## Setting Up
+## 설정
 
 #### Install dependencies
 
@@ -14,17 +14,7 @@ mongodb start 해줘야함. mac에서는 `brew services start mongodb-community@
 
 #### .env파일 설정
 
-#### Starting the server
-
-To start the server, run the following command
-
-```bash
-npm run start
-```
-
-#### database migration (Seed database)
-
-For a lack of better approach, the database is seeded with new seed files whenever you run the project with
+#### 서버 시작
 
 ```bash
 npm run start
