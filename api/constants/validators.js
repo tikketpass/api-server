@@ -15,3 +15,10 @@ exports.signInSchema = Joi.object({
     password: Joi.string().min(64).max(64).required(),
     role: Joi.string().valid("HOST", "PARTICIPANT").required()
 })
+
+exports.createConcertSchema = Joi.object({
+    name: Joi.string().required(),
+    startTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
+    endTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
+    startDate: Joi.string().regex(/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/).required()
+})

@@ -23,15 +23,15 @@ const userSchema = new Schema({
             required: true
         },
         startTime: {
-            type: Date,
+            type: String,
             required: true
         },
         endTime: {
-            type: Date,
+            type: String,
             required: true
         },
         startDate: {
-            type: Date,
+            type: String,
             required: true
         },
         spreadsheetLink: {

@@ -114,7 +114,7 @@ exports.signIn = async function (signInData) {
 
         signInData.password = sha256(signInData.password);
 
-        const user = await User.findOne({ ...signInData });
+        const user = await User.findOne({ email: signInData.email, password: signInData.password });
         if(user === null) throw new Error("user not found");
 
         return user;

@@ -58,7 +58,7 @@ exports.signIn = async function (req, res) {
     const {value, error} = Validator.signInSchema.validate(req.body);
     if(error) throw error;
 
-    const { role, ..._signInData } = signInData;
+    const { role, ..._signInData } = value;
     const user = await Auth.signIn(_signInData);
     const accessToken = jwt.sign({ sub: user._id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
