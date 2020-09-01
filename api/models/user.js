@@ -1,8 +1,6 @@
 const appRoot = require('app-root-path');
 const mongoose = require(`${appRoot}/database/config/connection`);
-const crypt = require("crypto");
-const secret = process.env.SHA256_SECRET || 'secret';
-const hash = crypt.createHmac('sha256', secret);
+const sha256 = require("sha256");
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
@@ -65,7 +63,7 @@ userSchema.set('toObject', {
 });
 
 userSchema.methods.hashPassword = (password) => {
-    return hash.update(password).digest('hex');
+    return sha256(password);
 }
 
 userSchema.methods.comparePassword = (plainPassword) => {

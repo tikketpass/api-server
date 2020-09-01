@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const VerifyEmail = require("../models/verify-email");
 const nodemailer = require("nodemailer");
+const sha256 = require("sha256");
 
 function generateHashCode () {
     return Math.random().toString(35).substring(2,15) + Math.random().toString(35).substring(2,15)
@@ -88,9 +89,34 @@ exports.signUp = async function (signUpData) {
         if(verifyEmail.isVerified) throw new Error("email is already verified");
 
         verifyEmail.isVerified = true
-        await VerifyEmail.update({id: verifyEmail._id}, verifyEmail);
+        await VerifyEmail.updateOne({id: verifyEmail._id}, verifyEmail);
+
+        signUpData.password = sha256(signUpData.password);
 
         const user = await User.create(signUpData);
+        return user;
+    } catch (err) {
+        throw err;
+    }
+}
+
+/**
+ *
+ * @param signInData
+ * @param signInData.email
+ * @param signInData.password
+ * @returns {Promise<void>}
+ */
+exports.signIn = async function (signInData) {
+    try {
+        if(signInData.email === undefined || typeof signInData.email !== 'string') throw new Error('string signInData.email is not present')
+        if(signInData.password === undefined || typeof signInData.password !== 'string') throw new Error('string signInData.passowrd is not present')
+
+        signInData.password = sha256(signInData.password);
+
+        const user = await User.findOne({ ...signInData });
+        if(user === null) throw new Error("user not found");
+
         return user;
     } catch (err) {
         throw err;
