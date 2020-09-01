@@ -4,24 +4,56 @@ const crypt = require("../helper/crypt");
 const secret = process.ENV.SHA256_SECRET || 'secret';
 const hash = crypt.createHmac('sha256', secret);
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 const userSchema = new Schema({
-    name: String,
-    email: String,
-    password: String,
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    password: {
+        type: String,
+        min: 64,
+        max: 64,
+        required: true
+    },
     concerts: [{
         topImage: String,
         bottomImage: String,
-        name: String,
-        startTime: Date,
-        endTime: Date,
-        startDate: Date,
-        spreadsheetLink: String
+        name: {
+            type: String,
+            required: true
+        },
+        startTime: {
+            type: Date,
+            required: true
+        },
+        endTime: {
+            type: Date,
+            required: true
+        },
+        startDate: {
+            type: Date,
+            required: true
+        },
+        spreadsheetLink: {
+            type: String
+        }
     }],
     tickets: [{
         concertId: ObjectId,
-        seatClass: String,
-        isUsed: Boolean
+        seatClass: {
+            type: String,
+            required: true
+        },
+        isUsed: {
+            type: Boolean,
+            required: true
+        }
     }]
 });
 
