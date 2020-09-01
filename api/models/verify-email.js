@@ -8,6 +8,7 @@ const verifyEmailSchema = new Schema({
         unique: true
     },
     isVerified: Boolean,
+    code: String,
     codeSentAt: Date
 });
 

@@ -2,6 +2,7 @@ const logger = require("../config/logger");
 const {HTTP_STATUS} = require("../constants/httpStatus");
 const Validator = require("../constants/validators");
 const Auth = require("../services/auth");
+const jwt = require("jsonwebtoken");
 
 let {error, success} = require("../constants/response");
 let response = require("../common/responseWriter");
@@ -24,66 +25,29 @@ exports.sendEmailCode = async function (req, res) {
   } catch (err) {
     logger.log("error", `Error occured, ${err}`);
     error.message = err.message || err._message;
-    return response.writeJson(res, err, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
+    return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
   }
 }
 
-/**
- * Get users
- */
-exports.getUsers = async function (req, res) {
+exports.signUp = async function (req, res) {
   try {
-    const users = await User.findAll();
+    const {value, error} = Validator.signUpSchema.validate(req.body);
+    if(error) throw error;
 
-    if (!users) {
-      error.message = "No users found";
-      return response.writeJson(res, error, HTTP_STATUS.NOT_FOUND.CODE)
-    }
-    success.data = users;
-    return response.writeJson(res, success, HTTP_STATUS.OK.CODE)
+    const user = await Auth.signUp(value);
+    const accessToken = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
+    return response.writeJson(res, {
+      accessToken,
+      tokenType: "Bearer",
+      user: {
+        id: user._id,
+        email: user.email
+      }
+    }, HTTP_STATUS.OK.CODE)
   } catch (err) {
     logger.log("error", `Error occured, ${err}`);
     error.message = err.message || err._message;
-    return response.writeJson(res, err, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
+    return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
   }
 }
-
-/**
- * Get user details
- */
-exports.getUser = async function (req, res) {}
-
-/**
- * Create user
- */
-exports.createUser = async function (req, res) {
-  const data = req.body
-
-  if (!data) {
-    error.message = `Please provide details for new user`;
-    logger.log("info", error.message);
-    return response.writeJson(res, error, HTTP_STATUS.BAD_REQUEST.CODE)
-  }
-
-  try {
-      const user = await User.create(data);
-
-      success.data = user;
-      return response.writeJson(res, success, HTTP_STATUS.OK.CODE)
-  } catch (err) {
-    logger.log("error", `Error occured, ${err}`);
-    error.message = err.message || err._message;
-    return response.writeJson(res, error, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
-  }
-}
-
-/**
- * Update user details
- */
-exports.updateUser = async function (req, res) {}
-
-/**
- * Delete user
- */
-exports.deleteUser = async function (req, res) {}

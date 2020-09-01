@@ -6,10 +6,6 @@ const hash = crypt.createHmac('sha256', secret);
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         unique: true,
