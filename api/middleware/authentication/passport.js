@@ -1,5 +1,5 @@
 const User = require("../../services/user");
-const crypt = require("../../helper/crypt");
+const crypt = require("crypto");
 
 const passport    = require('passport');
 const JwtStrategy = require("passport-jwt").Strategy;
@@ -25,30 +25,3 @@ passport.use(new JwtStrategy({
     }
 }
 ));
-
-passport.use(new LocalStrategy({
-        usernameField: 'username',
-        passwordField: 'password'
-    }, async (username, password, done) => {
-        try {
-            const user = await User.findOneById({username})
-            // if user does not exist
-            .then((user) => {
-                const match = crypt.compareHash(password, user.password)
-                if(match) {
-                    return match
-                } 
-            })
-            .catch((e) => {
-                if(!user) {
-                    return done(null, false)
-                }
-            })
-            // Verify that the password matches
-        } catch (error) {
-            console.log(error)
-        }
-            
-    }
-));
-

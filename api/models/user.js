@@ -1,7 +1,7 @@
 const appRoot = require('app-root-path');
 const mongoose = require(`${appRoot}/database/config/connection`);
-const crypt = require("../helper/crypt");
-const secret = process.ENV.SHA256_SECRET || 'secret';
+const crypt = require("crypto");
+const secret = process.env.SHA256_SECRET || 'secret';
 const hash = crypt.createHmac('sha256', secret);
 
 const Schema = mongoose.Schema;
@@ -45,7 +45,7 @@ const userSchema = new Schema({
         }
     }],
     tickets: [{
-        concertId: ObjectId,
+        concertId: String,
         seatClass: {
             type: String,
             required: true
