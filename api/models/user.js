@@ -1,59 +1,28 @@
 const appRoot = require('app-root-path');
 const mongoose = require(`${appRoot}/database/config/connection`);
 const crypt = require("../helper/crypt");
+const secret = process.ENV.SHA256_SECRET || 'secret';
+const hash = crypt.createHmac('sha256', secret);
 
 var Schema = mongoose.Schema;
 const userSchema = new Schema({
-    role: {
-        ref: 'Role',
-        type: mongoose.Schema.Types.ObjectId,
-        // required: true
-    },
-    firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: 'string',
-        unique: true,
-        lowercase: true,
-        trim: true,
-        required: true
-    },
-    phone: {
-        type: String,
-        unique: true,
-        trim: true,
-        required: true
-    },
-    status: {
-        type: String
-    },
-    language: {
-        ref: 'Language',
-        type: mongoose.Schema.Types.ObjectId,
-      
-    },
-    hash: {
-        type: String,
-        // required: true,
-        select: false,
-    },
-    salt: {
-        type: String,
-        // required: true,
-        select: false
-    }
-},
-{
-    timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
-    }
+    name: String,
+    email: String,
+    password: String,
+    concerts: [{
+        topImage: String,
+        bottomImage: String,
+        name: String,
+        startTime: Date,
+        endTime: Date,
+        startDate: Date,
+        spreadsheetLink: String
+    }],
+    tickets: [{
+        concertId: ObjectId,
+        seatClass: String,
+        isUsed: Boolean
+    }]
 });
 
 userSchema.virtual('id').get(function () {
@@ -67,18 +36,13 @@ userSchema.set('toObject', {
     virtuals: true
 });
 
-userSchema.methods.generateSalt = (length) => {
-    return crypt.getSalt(length);
-}
-
-userSchema.methods.hashPassword = (salt, password) => {
-    const salted = salt+password;
-    return crypt.getHash(salted);
+userSchema.methods.hashPassword = (password) => {
+    return hash.update(password).digest('hex');
 }
 
 userSchema.methods.comparePassword = (plainPassword) => {
-    const salted = this.salt+plainPassword;
-    return crypt.compareHash(salted, this.hash);
+    const otherPassword = this.hashPasword(plainPassword);
+    return otherPassword === this.password;
 };
 
-module.exports = mongoose.model('User', userSchema, 'users');
+module.exports = mongoose.model("User", userSchema, "users");
