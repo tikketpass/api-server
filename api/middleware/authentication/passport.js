@@ -1,4 +1,4 @@
-const User = require("../../services/user");
+const User = require("../../models/user");
 const crypt = require("crypto");
 
 const passport    = require('passport');
@@ -12,11 +12,13 @@ passport.use(new JwtStrategy({
 }, async (req, payload, done) => {
     try {
         // find user
-        const user =  await User.findOneById(payload.sub);
+        const user =  await User.findOne({_id: payload.sub});
         // if user does not exist
         if (!user) {
             return done(null, false)
         }
+
+        user.role = payload.role;
         // if user exists
         done(null, user)
 
