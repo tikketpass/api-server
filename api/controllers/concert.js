@@ -14,8 +14,8 @@ exports.createConcert = async function (req, res) {
     const {value, error} = Validator.createConcertSchema.validate(req.body);
     if(error) throw error;
 
-    const test = await Concert.createConcert(req.user._id, value)
-    return response.writeJson(res, test, HTTP_STATUS.OK.CODE)
+    const concert = await Concert.createConcert(req.user._id, value)
+    return response.writeJson(res, concert, HTTP_STATUS.OK.CODE)
   } catch (err) {
     logger.log("error", `Error occured, ${err}`);
     error.message = err.message || err._message;
@@ -55,6 +55,7 @@ exports.getMyConcerts = async function (req, res) {
         };
 
         const concerts = await Concert.getMyConcerts(userId, option);
+        if(req.user._id != userId) throw new HTTPError(403, "jwt user id and url param user id does not match");
 
         return response.writeJson(res, {
             concerts: concerts.map(concert => {
