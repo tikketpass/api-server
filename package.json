@@ -34,6 +34,7 @@
 		"moment": "^2.27.0",
 		"mongoose": "^5.10.0",
 		"mongoose-audit": "^1.0.0",
+		"node-http-error": "^2.0.0",
 		"nodemailer": "^6.4.11",
 		"npm-check-updates": "^3.2.2",
 		"npm-run": "^5.0.1",

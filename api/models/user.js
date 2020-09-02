@@ -16,8 +16,8 @@ const userSchema = new Schema({
         required: true
     },
     concerts: [{
-        topImage: String,
-        bottomImage: String,
+        topImageLink: String,
+        bottomImageLink: String,
         name: {
             type: String,
             required: true
