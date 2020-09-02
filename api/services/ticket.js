@@ -75,6 +75,7 @@ exports.getMyTickets = async function (userId, option) {
 
 exports.useTicket = async function (userId, encryptedQrData) {
     try {
+        // TODO: 나중에 환경변수로 빼기
         const aesSecret = "kik2fkas9ls1t7vrv72mb";
 
         const qrData = aes256.decrypt(aesSecret, encryptedQrData);

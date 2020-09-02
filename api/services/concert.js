@@ -1,5 +1,9 @@
 const User = require("../models/user");
 const HTTPError = require("node-http-error");
+const aws = require("aws-sdk");
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const s3 = new aws.S3({ apiVersion: "latest" });
 
 exports.createConcert = async function (userId, newConcertData) {
     try {
@@ -20,6 +24,25 @@ exports.createConcert = async function (userId, newConcertData) {
     }
 }
 
+exports.updateConcert = async function (concertId, concertData, topImageLink, bottomImageLink) {
+    try {
+        await User.updateOne({ "concerts._id": concertId }, { $set: {
+                "concerts.$.name": concertData.name,
+                "concerts.$.startTime": concertData.startTime,
+                "concerts.$.endTime": concertData.endTime,
+                "concerts.$.startDate": concertData.startDate,
+                "concerts.$.topImageLink": topImageLink,
+                "concerts.$.bottomImageLink": bottomImageLink,
+            }
+        });
+        const user = await User.findOne({ "concerts._id": concertId });
+        const concert = user.concerts.find(concert => concert._id == concertId);
+
+        return concert;
+    } catch (err) {
+        throw err;
+    }
+}
 exports.getConcert = async function (concertId) {
     try {
         const user = await User.findOne({"concerts._id": concertId});
@@ -56,3 +79,18 @@ exports.getMyConcerts = async function (userId, option) {
         throw err;
     }
 };
+
+exports.upload = multer({
+    storage: multerS3({
+        s3,
+        // TODO: 환경변수로 빼기
+        bucket: "ground-backend",
+        acl: 'public-read',
+        metadata: function (req, file, cb) {
+            cb(null, { fieldname: file.fieldname });
+        },
+        key: function (req, file, cb) {
+            cb(null, Date.now().toString())
+        }
+    })
+});

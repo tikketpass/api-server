@@ -15,12 +15,30 @@ exports.createConcert = async function (req, res) {
     if(error) throw error;
 
     const concert = await Concert.createConcert(req.user._id, value)
-    return response.writeJson(res, concert, HTTP_STATUS.OK.CODE)
+    return response.writeJson(res, { concert }, HTTP_STATUS.CREATED.CODE)
   } catch (err) {
     logger.log("error", `Error occured, ${err}`);
     error.message = err.message || err._message;
     return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
   }
+}
+
+exports.updateConcert = async function (req, res) {
+    try {
+        const concertId = req.params.concertId;
+
+        const topImageLink = req.files.topImage[0].location;
+        const bottomImageLink = req.files.bottomImage[0].location;
+        const { value, error } = Validator.updateConcertSchema.validate(req.body);
+
+        const concert = await Concert.updateConcert(concertId, value, topImageLink, bottomImageLink);
+
+        return response.writeJson(res, { concert }, HTTP_STATUS.OK.CODE);
+    } catch (err) {
+        logger.log("error", `Error occured, ${err}`);
+        error.message = err.message || err._message;
+        return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
+    }
 }
 
 exports.getConcert = async function (req, res) {

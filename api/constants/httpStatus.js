@@ -3,6 +3,10 @@ exports.HTTP_STATUS = {
         CODE: 200,
         MESSAGE: 'The request has succeeded.'
     },
+    CREATED: {
+        CODE: 201,
+        MESSAGE: 'The request has created'
+    },
     BAD_REQUEST: {
         CODE: 400,
         MESSAGE: 'The server could not understand the request.'
