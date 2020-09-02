@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const HTTPError = require("node-http-error");
+const aes256 = require("aes256");
 
 /**
  *
@@ -66,6 +67,43 @@ exports.getMyTickets = async function (userId, option) {
             expiredTickets,
             unexpiredTickets,
             nextTicket
+        }
+    } catch (err) {
+        throw err;
+    }
+}
+
+exports.useTicket = async function (userId, encryptedQrData) {
+    try {
+        const aesSecret = "kik2fkas9ls1t7vrv72mb";
+
+        const qrData = aes256.decrypt(aesSecret, encryptedQrData);
+        const [ qrUserId, qrTicketId ] = qrData.split(" ");
+
+        if(qrData === undefined || qrTicketId === undefined) throw new HTTPError(400, "Invalid qrdata");
+
+        if(userId != qrUserId) throw new HTTPError(403, "qr user id and url user id does not match");
+
+        await User.updateOne({ _id: userId, "tickets._id": qrTicketId }, { $set: { "tickets.$.isUsed": true } });
+        const user = await User.findOne({ "tickets._id": qrTicketId });
+        const ticket = user.tickets.find(ticket => ticket._id == qrTicketId);
+        const _user = await User.findOne({ "concerts._id": ticket.concertId });
+        const concert = _user.concerts.find(concert => concert._id == ticket.concertId);
+
+        return {
+            id: ticket._id,
+            seatClass: ticket.seatClass,
+            isUsed: ticket.isUsed,
+            concert: {
+                id: concert._id,
+                name: concert.name,
+                startTime: concert.startTime,
+                endTime: concert.endTime,
+                startDate: concert.startDate,
+                spreadsheetLink: concert.spreadsheetLink,
+                topImageLink: concert.topImageLink,
+                bottomImageLink: concert.bottomImageLink
+            }
         }
     } catch (err) {
         throw err;

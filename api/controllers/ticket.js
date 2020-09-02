@@ -28,3 +28,19 @@ exports.getMyTickets = async function (req, res) {
     return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
   }
 }
+
+exports.useTicket = async function (req, res) {
+  try {
+    const userId = req.params.userId;
+    const { value, error } = Validator.useTicketSchema.validate(req.body);
+    if(error) throw error;
+
+    const ticket = await Ticket.useTicket(userId, value.qrData);
+
+    return response.writeJson(res, ticket);
+  } catch (err) {
+    logger.log("error", `Error occured, ${err}`);
+    error.message = err.message || err._message;
+    return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE);
+  }
+}

@@ -22,3 +22,7 @@ exports.createConcertSchema = Joi.object({
     endTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
     startDate: Joi.string().regex(/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/).required()
 })
+
+exports.useTicketSchema = Joi.object({
+    qrData: Joi.string().required()
+})
