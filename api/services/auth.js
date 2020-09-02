@@ -2,6 +2,7 @@ const User = require("../models/user");
 const VerifyEmail = require("../models/verify-email");
 const nodemailer = require("nodemailer");
 const sha256 = require("sha256");
+const HTTPError = require("node-http-error");
 
 function generateHashCode () {
     return Math.random().toString(35).substring(2,15) + Math.random().toString(35).substring(2,15)
@@ -25,7 +26,7 @@ exports.sendEmailCode = async function (option) {
 
         let verifyEmail = await VerifyEmail.findOne({ email: option.to });
         if(verifyEmail !== null
-            && Date.now() - verifyEmail.codeSentAt <= 1000) throw new Error("code already sent in 1minute");
+            && Date.now() - verifyEmail.codeSentAt <= 1000) throw new HTTPError(429, "code already sent in 1minute");
 
         let { generateCode, generateHtml, ..._mailOptions } = option;
 
@@ -115,7 +116,7 @@ exports.signIn = async function (signInData) {
         signInData.password = sha256(signInData.password);
 
         const user = await User.findOne({ email: signInData.email, password: signInData.password });
-        if(user === null) throw new Error("user not found");
+        if(user === null) throw new HTTPError(404, "user not found");
 
         return user;
     } catch (err) {
