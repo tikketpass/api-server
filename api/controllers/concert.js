@@ -30,6 +30,7 @@ exports.getConcert = async function (req, res) {
         const concert = await Concert.getConcert(concertId);
 
         return response.writeJson(res, {
+            id: concert._id,
             name: concert.name,
             startTime: concert.startTime,
             endTime: concert.endTime,
@@ -38,6 +39,37 @@ exports.getConcert = async function (req, res) {
             topImageLink: concert.topImageLink,
             bottomImageLink: concert.bottomImageLink
         }, HTTP_STATUS.OK.CODE);
+    } catch (err) {
+        logger.log("error", `Error occured, ${err}`);
+        error.message = err.message || err._message;
+        return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
+    }
+}
+
+exports.getMyConcerts = async function (req, res) {
+    try {
+        const userId = req.params.userId;
+        const option = {
+            offset: parseInt(req.query.offset),
+            limit: parseInt(req.query.limit)
+        };
+
+        const concerts = await Concert.getMyConcerts(userId, option);
+
+        return response.writeJson(res, {
+            concerts: concerts.map(concert => {
+                return {
+                    id: concert._id,
+                    name: concert.name,
+                    startTime: concert.startTime,
+                    endTime: concert.endTime,
+                    startDate: concert.startDate,
+                    spreadsheetLink: concert.spreadsheetLink,
+                    topImageLink: concert.topImageLink,
+                    bottomImageLink: concert.bottomImageLink
+                }
+            })
+        });
     } catch (err) {
         logger.log("error", `Error occured, ${err}`);
         error.message = err.message || err._message;

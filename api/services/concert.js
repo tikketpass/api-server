@@ -32,3 +32,27 @@ exports.getConcert = async function (concertId) {
         throw err;
     }
 }
+
+/**
+ *
+ * @param userId
+ * @param option
+ * @param option.limit -> optional
+ * @param option.offset -> optional
+ * @returns {Promise<void>}
+ */
+exports.getMyConcerts = async function (userId, option) {
+    try {
+        const user = await User.findOne({_id: userId});
+        if (user === null) throw new HTTPError(404, "user not found");
+
+        const concerts = user.concerts;
+        const offset = option.offset || 0;
+        const limit = option.limit;
+
+        if(limit !== undefined) return concerts.slice(offset, offset+limit);
+        else return concerts.slice(offset);
+    } catch (err) {
+        throw err;
+    }
+};
