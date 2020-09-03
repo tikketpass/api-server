@@ -26,7 +26,7 @@ exports.sendEmailCode = async function (option) {
 
         let verifyEmail = await VerifyEmail.findOne({ email: option.to });
         if(verifyEmail !== null
-            && Date.now() - verifyEmail.codeSentAt <= 1000) throw new HTTPError(429, "code already sent in 1minute");
+            && Date.now() - verifyEmail.codeSentAt <= 60000) throw new HTTPError(429, "code already sent in 1minute");
 
         let { generateCode, generateHtml, ..._mailOptions } = option;
 
