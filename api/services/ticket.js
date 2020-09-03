@@ -27,6 +27,8 @@ exports.getMyTickets = async function (userId, option) {
                 id: ticket._id,
                 seatClass: ticket.seatClass,
                 isUsed: ticket.isUsed,
+                userName: ticket.userName,
+                userPhoneNumber: ticket.userPhoneNumber,
                 concert: {
                     id: concert._id,
                     name: concert.name,
@@ -95,6 +97,8 @@ exports.useTicket = async function (userId, encryptedQrData) {
             id: ticket._id,
             seatClass: ticket.seatClass,
             isUsed: ticket.isUsed,
+            userName: ticket.userName,
+            userPhoneNumber: ticket.userPhoneNumber,
             concert: {
                 id: concert._id,
                 name: concert.name,

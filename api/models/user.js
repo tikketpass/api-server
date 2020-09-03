@@ -40,6 +40,8 @@ const userSchema = new Schema({
     }],
     tickets: [{
         concertId: String,
+        userName: String,
+        userPhoneNumber: String,
         seatClass: {
             type: String,
             required: true
