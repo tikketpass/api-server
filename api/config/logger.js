@@ -15,7 +15,7 @@ const options = {
         json: true,
         maxsize: 5242880, // 5MB
         maxFiles: 5,
-        colorize: false,
+        colorize: true,
     },
     console: {
         level: 'debug',
@@ -30,6 +30,13 @@ const logger = winston.createLogger({
         new winston.transports.File(options.file),
         new winston.transports.Console(options.console),
     ],
+    format: winston.format.combine(
+        winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss',
+        }),
+        winston.format.colorize(),  // 색깔 넣어서 출력
+        winston.format.simple(),  // `${info.level}: ${info.message} JSON.stringify({ ...rest })` 포맷으로 출력
+    ),
     exitOnError: false, // do not exit on handled exceptions
 });
 
