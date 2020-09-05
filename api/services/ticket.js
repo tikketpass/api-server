@@ -56,7 +56,7 @@ exports.getMyTickets = async function (userId, option) {
         unexpiredTickets.sort((e1, e2) => e1.beginAt - e2.beginAt)
         // find next ticket
         const nextTicket = unexpiredTickets[0] || null;
-        delete nextTicket.beginAt;
+        if(nextTicket !== null) delete nextTicket.beginAt;
         unexpiredTickets = unexpiredTickets.slice(1).map(ticket => {
             delete ticket.beginAt;
             return ticket;
