@@ -73,7 +73,7 @@ exports.getMyConcerts = async function (userId, option) {
         const offset = option.offset || 0;
         const limit = option.limit;
 
-        if(!isNan(limit)) return concerts.slice(offset, offset+limit);
+        if(!isNaN(limit)) return concerts.slice(offset, offset+limit);
         else return concerts.slice(offset);
     } catch (err) {
         throw err;
