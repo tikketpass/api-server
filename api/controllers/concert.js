@@ -15,7 +15,16 @@ exports.createConcert = async function (req, res) {
     if(error) throw error;
 
     const concert = await Concert.createConcert(req.user._id, value)
-    return response.writeJson(res, { concert }, HTTP_STATUS.CREATED.CODE)
+    return response.writeJson(res, {
+        id: concert._id,
+        name: concert.name,
+        startTime: concert.startTime,
+        endTime: concert.endTime,
+        startDate: concert.startDate,
+        spreadsheetLink: concert.spreadsheetLink,
+        topImageLink: concert.topImageLink,
+        bottomImageLink: concert.bottomImageLink
+    }, HTTP_STATUS.CREATED.CODE)
   } catch (err) {
     logger.log("error", `Error occured, ${err}`);
     error.message = err.message || err._message;
@@ -33,7 +42,16 @@ exports.updateConcert = async function (req, res) {
 
         const concert = await Concert.updateConcert(concertId, value, topImageLink, bottomImageLink);
 
-        return response.writeJson(res, { concert }, HTTP_STATUS.OK.CODE);
+        return response.writeJson(res, {
+            id: concert._id,
+            name: concert.name,
+            startTime: concert.startTime,
+            endTime: concert.endTime,
+            startDate: concert.startDate,
+            spreadsheetLink: concert.spreadsheetLink,
+            topImageLink: concert.topImageLink,
+            bottomImageLink: concert.bottomImageLink
+        }, HTTP_STATUS.OK.CODE);
     } catch (err) {
         logger.log("error", `Error occured, ${err}`);
         error.message = err.message || err._message;
