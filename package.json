@@ -47,7 +47,6 @@
 		"passport-jwt": "^4.0.0",
 		"passport-local": "^1.0.0",
 		"sha256": "^0.2.0",
-		"sheet": "file:sheet.js",
 		"uuid": "^3.4.0",
 		"winston": "^3.3.3"
 	},
