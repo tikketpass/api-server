@@ -124,7 +124,7 @@ function readDocument(auth, spreadsheetId, range) {
  *
  * @param {google.auth.OAuth2} auth
  */
-function createDocument(auth, title) {
+async function createDocument(auth, title) {
   const resource = {
     properties: {
       title: title,
@@ -140,9 +140,35 @@ function createDocument(auth, title) {
       if (err) {
         reject(auth);
       } else {
+        createPermission(auth, spreadSheet.data.spreadsheetId);
         return resolve(`${spreadSheet.data.spreadsheetId}`);
       }
     })
+  });
+}
+
+async function createPermission(auth, fileId) {
+  const drive = google.drive({
+    version: 'v3',
+    auth: auth
+  });
+
+  return new Promise((resolve, reject) => {
+    drive.permissions.create({
+      resource: {
+        'type': 'anyone',
+        'role': 'writer',
+      },
+      fileId: fileId,
+      permissionId: "anyoneWithLink",
+      fields: 'id',
+    }, function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res.data.id); // supposed to be anyoneWithLink
+      }
+    });
   });
 }
 
