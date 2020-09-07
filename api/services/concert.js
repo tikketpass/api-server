@@ -1,18 +1,24 @@
 const User = require("../models/user");
+const Spreadsheet = require("../models/spreadSheet");
 const HTTPError = require("node-http-error");
 const aws = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const s3 = new aws.S3({ apiVersion: "latest" });
+const sheet = require("./sheet");
 
 exports.createConcert = async function (userId, newConcertData) {
     try {
         let newConcert = newConcertData;
-        newConcert.spreadsheetLink = "test";
+        newConcert.spreadsheetId = await sheet.create(newConcert.name);
         newConcert.topImageLink = null;
         newConcert.bottomImageLink = null;
 
-        //TODO: create spreadsheet
+        Spreadsheet.create({
+            spreadsheetId: newConcert.spreadsheetId, 
+            title: newConcert.name,
+            rows: [],
+        });
 
         await User.updateOne({_id: userId}, {$push: {concerts: newConcertData}});
         const user = await User.findOne({_id: userId});

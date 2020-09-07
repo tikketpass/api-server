@@ -1,6 +1,7 @@
+const appRoot = require('app-root-path');
+
 const SpreadSheet = require("../models/spreadSheet");
 const HTTPError = require("node-http-error");
-
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
@@ -10,7 +11,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.goo
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'sheets.googleapis.com-nodejs-write.json';
+const TOKEN_PATH = `${appRoot}/api/services/sheets.googleapis.com-nodejs-write.json`;
 
 /**
  *
@@ -18,7 +19,7 @@ const TOKEN_PATH = 'sheets.googleapis.com-nodejs-write.json';
  */
 const create = async (title) => {
   return new Promise((resolve, reject) => {
-    fs.promises.readFile('./credentials.json').then((content) => {
+    fs.promises.readFile(`${appRoot}/api/services/credentials.json`).then((content) => {
       authorize(JSON.parse(content))
         .then((auth) => { return createDocument(auth, title); })
         .then(resolve)
@@ -32,7 +33,7 @@ const create = async (title) => {
 
 const read = async (spreadsheetId, range) => {
   return new Promise((resolve, reject) => {
-    fs.promises.readFile('./credentials.json').then((content) => {
+    fs.promises.readFile(`${appRoot}/api/services/credentials.json`).then((content) => {
       authorize(JSON.parse(content))
         .then((auth) => { return readDocument(auth, spreadsheetId, range); })
         .then(resolve)
@@ -158,20 +159,22 @@ exports.sync = async (spreadsheetId) => {
      * 스프레드시트 정보를 서버 디비에 동기화시킨다.
      */
 
-    SpreadSheet.findOne({"spreadsheetId": spreadsheetId}).then(doc => {
-        excel.read(spreadsheetId, "시트1!A:D").then((rows) => {
-            doc.rows = rows.map((row) => {
-                row_obj = {
-                    name: row[0],
-                    contact: row[1],
-                    email: row[2],
-                    seat: row[3],
-                };
-            });
-            doc.save();
+    return SpreadSheet.findOne({"spreadsheetId": spreadsheetId}).then(sheet => {
+      read(spreadsheetId, "시트1!A:D").then((rows) => {
+        sheet.rows = rows.map((row) => {
+          return {
+            name: row[0],
+            contact: row[1],
+            email: row[2],
+            seat: row[3],
+          };
         });
+        sheet.save();
+        console.log(sheet.rows);
+      });
+      return sheet;
     }).catch(err => {
-        throw new HTTPError(403, `cannot find matching spreadsheetId: {spreadsheetId}, err: ${err}`);
+      throw new HTTPError(403, `cannot find matching spreadsheetId: ${spreadsheetId}, err: ${err}`);
     });
 }
 

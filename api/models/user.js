@@ -34,7 +34,7 @@ const userSchema = new Schema({
             type: String,
             required: true
         },
-        spreadsheetLink: {
+        spreadsheetId: {
             type: String
         }
     }],
