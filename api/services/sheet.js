@@ -231,6 +231,8 @@ exports.sync = async (spreadsheetId) => {
     // 중복을 방지하기 위해 모든 티켓들 삭제했다가 다시 저장함
     await Promise.all(sheet.rows.map(async row => {
         const _user = await User.findOne({ email: row.email });
+        if(_user === null) return;
+
         const originalTicket = _user.tickets.find(ticket => ticket.concertId == concertId) || {};
         const isUsed = originalTicket.isUsed || false;
 

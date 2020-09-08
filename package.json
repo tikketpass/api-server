@@ -34,7 +34,7 @@
 		"googleapis": "^59.0.0",
 		"joi": "^17.2.1",
 		"jsonwebtoken": "^8.5.1",
-		"moment": "^2.27.0",
+		"moment-timezone": "^0.5.31",
 		"mongoose": "^5.10.0",
 		"mongoose-audit": "^1.0.0",
 		"multer": "^1.4.2",
