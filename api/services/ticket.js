@@ -33,8 +33,8 @@ exports.getMyTickets = async function (userId, option) {
                 concert: {
                     id: concert._id,
                     name: concert.name,
-                    startTime: moment.tz(concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().toDate(),
-                    enterTime: moment.tz(concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().toDate(),                    place: concert.place,
+                    startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().toDate(),
+                    enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().toDate(),                    place: concert.place,
                     spreadsheetId: concert.spreadsheetId,
                     spreadsheetLink: concert.spreadsheetLink,
                     topImageLink: concert.topImageLink,
@@ -47,15 +47,15 @@ exports.getMyTickets = async function (userId, option) {
         const now = Date.now()
         // find expired tickets
         let expiredTickets = tickets.filter(ticket => ticket.concert.startTime < now).map(ticket => {
-            ticket.concert.startTime = moment.tz(ticket.concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
-            ticket.concert.enterTime = moment.tz(ticket.concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
+            ticket.concert.startTime = moment.tz(ticket.concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
+            ticket.concert.enterTime = moment.tz(ticket.concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
             return ticket;
         });
         expiredTickets.sort((e1, e2) => e2 - e1);
         // find unexipred tickets
         let unexpiredTickets = tickets.filter(ticket => ticket.concert.startTime >= now).map(ticket => {
-            ticket.concert.startTime = moment.tz(ticket.concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
-            ticket.concert.enterTime = moment.tz(ticket.concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
+            ticket.concert.startTime = moment.tz(ticket.concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
+            ticket.concert.enterTime = moment.tz(ticket.concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
             return ticket;
         });
         unexpiredTickets.sort((e1, e2) => e1.concert.startTime - e2.concert.startTime)
@@ -103,8 +103,8 @@ exports.useTicket = async function (userId, encryptedQrData) {
             concert: {
                 id: concert._id,
                 name: concert.name,
-                startTime: moment.tz(concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
-                enterTime: moment.tz(concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),place: concert.place,
+                startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+                enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),place: concert.place,
                 spreadsheetId: concert.spreadsheetId,
                 spreadsheetLink: concert.spreadsheetLink,
                 topImageLink: concert.topImageLink,

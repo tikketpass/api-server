@@ -19,8 +19,8 @@ exports.createConcert = async function (req, res) {
     return response.writeJson(res, {
         id: concert._id,
         name: concert.name,
-        startTime: moment.tz(concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
-        enterTime: moment.tz(concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+        startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+        enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
         place: concert.place,
         spreadsheetId: concert.spreadsheetId,
         spreadsheetLink: concert.spreadsheetLink,
@@ -47,8 +47,8 @@ exports.updateConcert = async function (req, res) {
         return response.writeJson(res, {
             id: concert._id,
             name: concert.name,
-            startTime: moment.tz(concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
-            enterTime: moment.tz(concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+            startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+            enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
             place: concert.place,
             spreadsheetId: concert.spreadsheetId,
             spreadsheetLink: concert.spreadsheetLink,
@@ -71,8 +71,8 @@ exports.getConcert = async function (req, res) {
         return response.writeJson(res, {
             id: concert._id,
             name: concert.name,
-            startTime: moment.tz(concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
-            enterTime: moment.tz(concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+            startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+            enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
             place: concert.place,
             spreadsheetId: concert.spreadsheetId,
             spreadsheetLink: concert.spreadsheetLink,
@@ -102,8 +102,8 @@ exports.getMyConcerts = async function (req, res) {
                 return {
                     id: concert._id,
                     name: concert.name,
-                    startTime: moment.tz(concert.startTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
-                    enterTime: moment.tz(concert.enterTime.getTime()+(3600000*9), "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+                    startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
+                    enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm"),
                     place: concert.place,
                     spreadsheetId: concert.spreadsheetId,
                     spreadsheetLink: concert.spreadsheetLink,
