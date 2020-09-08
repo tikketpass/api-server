@@ -21,7 +21,9 @@ exports.sendEmailCode = async function (req, res) {
     }
 
     await Auth.sendEmailCode(option)
-    return response.writeJson(res, null, HTTP_STATUS.OK.CODE)
+    return response.writeJson(res, {
+      message: "send success"
+    }, HTTP_STATUS.OK.CODE)
   } catch (err) {
     logger.log("error", `Error occured, ${err}`);
     error.message = err.message || err._message;
