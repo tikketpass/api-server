@@ -1,6 +1,7 @@
 const appRoot = require('app-root-path');
 
 const SpreadSheet = require("../models/spreadSheet");
+const User = require("../models/user");
 const HTTPError = require("node-http-error");
 const fs = require('fs');
 const readline = require('readline');
@@ -185,23 +186,48 @@ exports.sync = async (spreadsheetId) => {
      * 스프레드시트 정보를 서버 디비에 동기화시킨다.
      */
 
-    return SpreadSheet.findOne({"spreadsheetId": spreadsheetId}).then(sheet => {
-      read(spreadsheetId, "시트1!A:D").then((rows) => {
-        sheet.rows = rows.map((row) => {
-          return {
+    // 공연 ID 검색
+    const user = await User.findOne({ "concerts.spreadsheetId": spreadsheetId });
+    if(user === null) throw new HTTPError(403, `cannot find matching spreadsheetId: ${spreadsheetId}, err: ${err}`);
+
+    const concert = user.concerts.find(concert => concert.spreadsheetId == spreadsheetId);
+    const concertId = concert._id;
+
+    const sheet = await SpreadSheet.findOne({"spreadsheetId": spreadsheetId});
+    const rows = await read(spreadsheetId, "시트1!A:D");
+
+    sheet.rows = rows.map((row) => {
+        return {
             name: row[0],
             contact: row[1],
             email: row[2],
             seat: row[3],
-          };
-        });
-        sheet.save();
-        console.log(sheet.rows);
-      });
-      return sheet;
-    }).catch(err => {
-      throw new HTTPError(403, `cannot find matching spreadsheetId: ${spreadsheetId}, err: ${err}`);
+        };
     });
+    sheet.save();
+
+    // 중복을 방지하기 위해 모든 티켓들 삭제했다가 다시 저장함
+    await Promise.all(sheet.rows.map(async row => {
+        const _user = await User.findOne({ email: row.email });
+        const originalTicket = _user.tickets.find(ticket => ticket.concertId == concertId) || {};
+        const isUsed = originalTicket.isUsed || false;
+
+        _user.tickets = _user.tickets.filter(ticket => ticket.concertId != concertId);
+
+        const ticket = {
+            concertId,
+            userName: row.name,
+            userPhoneName: row.contact,
+            seatClass: row.seat,
+            isUsed
+        }
+
+        _user.tickets.push(ticket);
+        _user.save();
+    }))
+
+    console.log(sheet.rows);
+
 }
 
 exports.checkList = async (row) => {
