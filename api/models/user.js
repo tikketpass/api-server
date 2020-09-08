@@ -11,15 +11,15 @@ const concertSchema = new Schema({
         type: String,
         required: true
     },
+    enterTime: {
+        type: Date,
+        required: true
+    },
     startTime: {
-        type: String,
+        type: Date,
         required: true
     },
-    endTime: {
-        type: String,
-        required: true
-    },
-    startDate: {
+    place: {
         type: String,
         required: true
     },

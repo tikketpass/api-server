@@ -18,16 +18,16 @@ exports.signInSchema = Joi.object({
 
 exports.createConcertSchema = Joi.object({
     name: Joi.string().required(),
-    startTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
-    endTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
-    startDate: Joi.string().regex(/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/).required()
+    place: Joi.string().required(),
+    startTime: Joi.date().required(),
+    enterTime: Joi.date().required()
 })
 
 exports.updateConcertSchema = Joi.object({
     name: Joi.string().required(),
-    startTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
-    endTime: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/).required(),
-    startDate: Joi.string().regex(/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/).required()
+    place: Joi.string().required(),
+    startTime: Joi.date().required(),
+    enterTime: Joi.date().required()
 });
 
 exports.useTicketSchema = Joi.object({

@@ -33,35 +33,26 @@ exports.getMyTickets = async function (userId, option) {
                     id: concert._id,
                     name: concert.name,
                     startTime: concert.startTime,
-                    endTime: concert.endTime,
-                    startDate: concert.startDate,
+                    enterTime: concert.enterTime,
+                    place: concert.place,
                     spreadsheetId: concert.spreadsheetId,
                     spreadsheetLink: concert.spreadsheetLink,
                     topImageLink: concert.topImageLink,
                     bottomImageLink: concert.bottomImageLink
-                },
-                beginAt: new Date(`${concert.startDate}T${concert.startTime}`)
+                }
             }
         }));
 
         const now = Date.now()
         // find expired tickets
-        let expiredTickets = tickets.filter(ticket => ticket.beginAt < now);
+        let expiredTickets = tickets.filter(ticket => ticket.concert.startTime < now);
         expiredTickets.sort((e1, e2) => e2 - e1);
-        expiredTickets = expiredTickets.map(ticket => {
-            delete ticket.beginAt;
-            return ticket;
-        });
         // find unexipred tickets
-        let unexpiredTickets = tickets.filter(ticket => ticket.beginAt >= now);
-        unexpiredTickets.sort((e1, e2) => e1.beginAt - e2.beginAt)
+        let unexpiredTickets = tickets.filter(ticket => ticket.concert.startTime >= now);
+        unexpiredTickets.sort((e1, e2) => e1.concert.startTime - e2.concert.startTime)
         // find next ticket
         const nextTicket = unexpiredTickets[0] || null;
-        if(nextTicket !== null) delete nextTicket.beginAt;
-        unexpiredTickets = unexpiredTickets.slice(1).map(ticket => {
-            delete ticket.beginAt;
-            return ticket;
-        });
+        unexpiredTickets = unexpiredTickets.slice(1);
 
         if(expiredSize) expiredTickets = expiredTickets.slice(expiredTickets.length - expiredSize);
         if(unexpiredSize) unexpiredTickets = unexpiredTickets.slice(0, unexpiredSize);
@@ -104,8 +95,8 @@ exports.useTicket = async function (userId, encryptedQrData) {
                 id: concert._id,
                 name: concert.name,
                 startTime: concert.startTime,
-                endTime: concert.endTime,
-                startDate: concert.startDate,
+                enterTime: concert.enterTime,
+                place: concert.place,
                 spreadsheetId: concert.spreadsheetId,
                 spreadsheetLink: concert.spreadsheetLink,
                 topImageLink: concert.topImageLink,

@@ -35,8 +35,8 @@ exports.updateConcert = async function (concertId, concertData, topImageLink, bo
         await User.updateOne({ "concerts._id": concertId }, { $set: {
                 "concerts.$.name": concertData.name,
                 "concerts.$.startTime": concertData.startTime,
-                "concerts.$.endTime": concertData.endTime,
-                "concerts.$.startDate": concertData.startDate,
+                "concerts.$.enterTime": concertData.enterTime,
+                "concerts.$.place": concertData.place,
                 "concerts.$.topImageLink": topImageLink,
                 "concerts.$.bottomImageLink": bottomImageLink,
             }
