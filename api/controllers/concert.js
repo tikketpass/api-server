@@ -22,6 +22,7 @@ exports.createConcert = async function (req, res) {
         endTime: concert.endTime,
         startDate: concert.startDate,
         spreadsheetId: concert.spreadsheetId,
+        spreadsheetLink: concert.spreadsheetLink,
         topImageLink: concert.topImageLink,
         bottomImageLink: concert.bottomImageLink
     }, HTTP_STATUS.CREATED.CODE)
@@ -49,6 +50,7 @@ exports.updateConcert = async function (req, res) {
             endTime: concert.endTime,
             startDate: concert.startDate,
             spreadsheetId: concert.spreadsheetId,
+            spreadsheetLink: concert.spreadsheetLink,
             topImageLink: concert.topImageLink,
             bottomImageLink: concert.bottomImageLink
         }, HTTP_STATUS.OK.CODE);
@@ -72,6 +74,7 @@ exports.getConcert = async function (req, res) {
             endTime: concert.endTime,
             startDate: concert.startDate,
             spreadsheetId: concert.spreadsheetId,
+            spreadsheetLink: concert.spreadsheetLink,
             topImageLink: concert.topImageLink,
             bottomImageLink: concert.bottomImageLink
         }, HTTP_STATUS.OK.CODE);
@@ -102,6 +105,7 @@ exports.getMyConcerts = async function (req, res) {
                     endTime: concert.endTime,
                     startDate: concert.startDate,
                     spreadsheetId: concert.spreadsheetId,
+                    spreadsheetLink: concert.spreadsheetLink,
                     topImageLink: concert.topImageLink,
                     bottomImageLink: concert.bottomImageLink
                 }

@@ -3,6 +3,49 @@ const mongoose = require(`${appRoot}/database/config/connection`);
 const sha256 = require("sha256");
 
 const Schema = mongoose.Schema;
+
+const concertSchema = new Schema({
+    topImageLink: String,
+    bottomImageLink: String,
+    name: {
+        type: String,
+        required: true
+    },
+    startTime: {
+        type: String,
+        required: true
+    },
+    endTime: {
+        type: String,
+        required: true
+    },
+    startDate: {
+        type: String,
+        required: true
+    },
+    spreadsheetId: {
+        type: String
+    }
+});
+
+concertSchema.virtual("spreadsheetLink").get(function() {
+    return `https://docs.google.com/spreadsheets/d/${this.spreadsheetId}/edit`;
+});
+
+const ticketSchema = new Schema({
+    concertId: String,
+    userName: String,
+    userPhoneNumber: String,
+    seatClass: {
+        type: String,
+        required: true
+    },
+    isUsed: {
+        type: Boolean,
+        required: true
+    }
+});
+
 const userSchema = new Schema({
     email: {
         type: String,
@@ -15,42 +58,8 @@ const userSchema = new Schema({
         max: 64,
         required: true
     },
-    concerts: [{
-        topImageLink: String,
-        bottomImageLink: String,
-        name: {
-            type: String,
-            required: true
-        },
-        startTime: {
-            type: String,
-            required: true
-        },
-        endTime: {
-            type: String,
-            required: true
-        },
-        startDate: {
-            type: String,
-            required: true
-        },
-        spreadsheetId: {
-            type: String
-        }
-    }],
-    tickets: [{
-        concertId: String,
-        userName: String,
-        userPhoneNumber: String,
-        seatClass: {
-            type: String,
-            required: true
-        },
-        isUsed: {
-            type: Boolean,
-            required: true
-        }
-    }]
+    concerts: [concertSchema],
+    tickets: [ticketSchema],
 });
 
 userSchema.virtual('id').get(function () {

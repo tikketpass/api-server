@@ -36,6 +36,7 @@ exports.getMyTickets = async function (userId, option) {
                     endTime: concert.endTime,
                     startDate: concert.startDate,
                     spreadsheetId: concert.spreadsheetId,
+                    spreadsheetLink: concert.spreadsheetLink,
                     topImageLink: concert.topImageLink,
                     bottomImageLink: concert.bottomImageLink
                 },
@@ -106,6 +107,7 @@ exports.useTicket = async function (userId, encryptedQrData) {
                 endTime: concert.endTime,
                 startDate: concert.startDate,
                 spreadsheetId: concert.spreadsheetId,
+                spreadsheetLink: concert.spreadsheetLink,
                 topImageLink: concert.topImageLink,
                 bottomImageLink: concert.bottomImageLink
             }

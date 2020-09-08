@@ -11,7 +11,9 @@ exports.sync = async function (req, res) {
     const { spreadsheetId } = req.params;
     if (!spreadsheetId) throw new HTTPError("403", `Invalid parameter spreadsheetId: ${req.params.spreadsheetId}`);
 
-    await Sheet.sync(spreadsheetId);
+    const result = await Sheet.sync(spreadsheetId);
+
+    
 
     return response.writeJson(res, { message: "Sync Success" }, HTTP_STATUS.OK.CODE);
   } catch (err) {
