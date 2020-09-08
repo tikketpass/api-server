@@ -10,7 +10,7 @@ const sheet = require("./sheet");
 exports.createConcert = async function (userId, newConcertData) {
     try {
         let newConcert = newConcertData;
-        newConcert.spreadsheetId = await sheet.create(newConcert.name);
+        newConcert.spreadsheetId = await sheet.create(newConcert.name, "시트1!A:D", [["이름", "연락처", "이메일", "좌석"]]);
         newConcert.topImageLink = null;
         newConcert.bottomImageLink = null;
 

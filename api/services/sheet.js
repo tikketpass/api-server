@@ -18,11 +18,14 @@ const TOKEN_PATH = `${appRoot}/api/services/sheets.googleapis.com-nodejs-write.j
  *
  * @param {String} title
  */
-const create = async (title) => {
+const create = async (title, range, values) => {
   return new Promise((resolve, reject) => {
     fs.promises.readFile(`${appRoot}/api/services/credentials.json`).then((content) => {
       authorize(JSON.parse(content))
-        .then((auth) => { return createDocument(auth, title); })
+        .then((auth) => {
+            return createDocument(auth, title)
+                .then(spreadsheetId => writeDocument(auth, spreadsheetId, range, values))
+        })
         .then(resolve)
         .catch(getNewToken)
         .catch(console.log);
@@ -99,6 +102,25 @@ function getNewToken(oAuth2Client) {
       });
     });
   });
+}
+
+function writeDocument(auth, spreadsheetId, range, values) {
+    const sheets = google.sheets({ version: 'v4', auth });
+
+    return new Promise((resolve, reject) => {
+        sheets.spreadsheets.values.append({
+            spreadsheetId,
+            range,
+            valueInputOption: 'RAW',
+            insertDataOption: 'INSERT_ROWS',
+            resource: {
+                values
+            }
+        }, (err, res) => {
+            if (err) return reject(err);
+            return resolve(spreadsheetId);
+        });
+    });
 }
 
 /**
