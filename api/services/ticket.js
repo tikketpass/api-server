@@ -46,19 +46,22 @@ exports.getMyTickets = async function (userId, option) {
         console.log(tickets)
         const now = Date.now()
         // find expired tickets
-        let expiredTickets = tickets.filter(ticket => ticket.concert.startTime < now).map(ticket => {
-            ticket.concert.startTime = moment.tz(ticket.concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
-            ticket.concert.enterTime = moment.tz(ticket.concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
-            return ticket;
-        });
+        let expiredTickets = tickets.filter(ticket => ticket.concert.startTime < now);
         expiredTickets.sort((e1, e2) => e2 - e1);
-        // find unexipred tickets
-        let unexpiredTickets = tickets.filter(ticket => ticket.concert.startTime >= now).map(ticket => {
+        expiredTickets = expiredTickets.map(ticket => {
             ticket.concert.startTime = moment.tz(ticket.concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
             ticket.concert.enterTime = moment.tz(ticket.concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
             return ticket;
         });
+        // find unexipred tickets
+        let unexpiredTickets = tickets.filter(ticket => ticket.concert.startTime >= now);
         unexpiredTickets.sort((e1, e2) => e1.concert.startTime - e2.concert.startTime)
+        unexpiredTickets = unexpiredTickets.map(ticket => {
+            ticket.concert.startTime = moment.tz(ticket.concert.startTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
+            ticket.concert.enterTime = moment.tz(ticket.concert.enterTime, "Asia/Seoul").utc().format("YYYY-MM-DD hh:mm")
+            return ticket;
+        });
+
         // find next ticket
         const nextTicket = unexpiredTickets[0] || null;
         unexpiredTickets = unexpiredTickets.slice(1);
