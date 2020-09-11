@@ -15,21 +15,23 @@ exports.getTicket = async function(userId, tokenUserId, ticketId) {
         if(concert === null) throw new HTTPError(404, "concert not found");
 
         return {
-            id: ticket._id,
-            seatClass: ticket.seatClass,
-            isUsed: ticket.isUsed,
-            userName: ticket.userName,
-            userPhoneNumber: ticket.userPhoneNumber,
-            concert: {
-                id: concert._id,
-                name: concert.name,
-                startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().toDate(),
-                enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().toDate(),
-                place: concert.place,
-                spreadsheetId: concert.spreadsheetId,
-                spreadsheetLink: concert.spreadsheetLink,
-                topImageLink: concert.topImageLink,
-                bottomImageLink: concert.bottomImageLink
+            ticket: {
+                id: ticket._id,
+                seatClass: ticket.seatClass,
+                isUsed: ticket.isUsed,
+                userName: ticket.userName,
+                userPhoneNumber: ticket.userPhoneNumber,
+                concert: {
+                    id: concert._id,
+                    name: concert.name,
+                    startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().toDate(),
+                    enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().toDate(),
+                    place: concert.place,
+                    spreadsheetId: concert.spreadsheetId,
+                    spreadsheetLink: concert.spreadsheetLink,
+                    topImageLink: concert.topImageLink,
+                    bottomImageLink: concert.bottomImageLink
+                }
             }
         }
     } catch (err) {
