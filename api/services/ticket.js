@@ -3,6 +3,40 @@ const HTTPError = require("node-http-error");
 const aes256 = require("aes256");
 const moment = require("moment-timezone");
 
+exports.getTicket = async function(userId, tokenUserId, ticketId) {
+    try {
+        const user = await User.findOne({ "tickets._id": ticketId });
+        if(user === null) throw new HTTPError(404, "ticket not found");
+        if(userId != tokenUserId || user._id != userId) throw new HTTPError(403, "user is not ticket owner");
+
+        const ticket = user.tickets.find(ticket => ticket._id == ticketId);
+        const _user = await User.findOne({ "concerts._id": ticket.concertId });
+        const concert = _user.concerts.find(concert => concert._id == ticket.concertId);
+        if(concert === null) throw new HTTPError(404, "concert not found");
+
+        return {
+            id: ticket._id,
+            seatClass: ticket.seatClass,
+            isUsed: ticket.isUsed,
+            userName: ticket.userName,
+            userPhoneNumber: ticket.userPhoneNumber,
+            concert: {
+                id: concert._id,
+                name: concert.name,
+                startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().toDate(),
+                enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().toDate(),
+                place: concert.place,
+                spreadsheetId: concert.spreadsheetId,
+                spreadsheetLink: concert.spreadsheetLink,
+                topImageLink: concert.topImageLink,
+                bottomImageLink: concert.bottomImageLink
+            }
+        }
+    } catch (err) {
+        throw err;
+    }
+}
+
 /**
  *
  * @param userId
@@ -34,7 +68,8 @@ exports.getMyTickets = async function (userId, option) {
                     id: concert._id,
                     name: concert.name,
                     startTime: moment.tz(concert.startTime, "Asia/Seoul").utc().toDate(),
-                    enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().toDate(),                    place: concert.place,
+                    enterTime: moment.tz(concert.enterTime, "Asia/Seoul").utc().toDate(),
+                    place: concert.place,
                     spreadsheetId: concert.spreadsheetId,
                     spreadsheetLink: concert.spreadsheetLink,
                     topImageLink: concert.topImageLink,

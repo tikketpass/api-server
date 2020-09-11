@@ -6,6 +6,22 @@ const Ticket = require("../services/ticket");
 let {error, success} = require("../constants/response");
 let response = require("../common/responseWriter");
 
+exports.getTicket = async function (req, res) {
+  try {
+    const userId = req.params.userId;
+    const ticketId = req.params.ticketId;
+    const tokenUserId = req.user._id;
+
+    const ticket = await Ticket.getTicket(userId, tokenUserId, ticketId);
+
+    return response.writeJson(res, ticket, HTTP_STATUS.OK.CODE)
+  }  catch (err) {
+    logger.log("error", `Error occured, ${err}`);
+    error.message = err.message || err._message;
+    return response.writeJson(res, { message: err.message }, HTTP_STATUS.INTERNAL_SERVER_ERROR.CODE)
+  }
+}
+
 /**
  * get my tickets
  */
